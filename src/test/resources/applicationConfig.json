@@ -1,0 +1,5 @@
+{
+  "lightProcessingTimeMs": 500,
+  "mediumProcessingTimeMs": 2500,
+  "heavyProcessingTimeMs": 5000
+}
