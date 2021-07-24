@@ -10,11 +10,10 @@ public class CommandGenerator {
     this.config = config;
   }
 
-
-  public List<Command> generateCommand() {
+  public List<Command> generateCommands() {
     List<Command> commands = new ArrayList<>();
     for (int i = 0; i < config.getNumberOfCommands(); i++) {
-      commands.add(new Command(1,CommandWeight.HEAVY,new ArrayList<>()));
+      commands.add(new Command(i, CommandWeight.HEAVY, new ArrayList<>()));
     }
     return commands;
   }

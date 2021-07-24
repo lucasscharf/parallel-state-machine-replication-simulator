@@ -4,15 +4,19 @@ public class Config {
   private Integer lightProcessingTimeMs;
   private Integer mediumProcessingTimeMs;
   private Integer heavyProcessingTimeMs;
+
   private Integer maxNumberOfDependenciesPerCommand;
   private Integer dependencyModulus;
   private Integer numberOfCommands;
+
+  private Integer numberOfThreads;
 
   public Config() {
     lightProcessingTimeMs = 200;
     mediumProcessingTimeMs = 500;
     heavyProcessingTimeMs = 1500;
-
+    numberOfCommands = 100;
+    numberOfThreads = 1;
   }
 
   public Integer getLightProcessingTimeMs() {
@@ -55,7 +59,6 @@ public class Config {
     this.maxNumberOfDependenciesPerCommand = maxNumberOfDependenciesPerCommand;
   }
 
-  
   public Integer getNumberOfCommands() {
     return numberOfCommands;
   }
@@ -64,5 +67,12 @@ public class Config {
     this.numberOfCommands = numberOfCommands;
   }
 
-  
+  public Integer getNumberOfThreads() {
+    return numberOfThreads;
+  }
+
+  public void setNumberOfThreads(Integer numberOfThreads) {
+    this.numberOfThreads = numberOfThreads;
+  }
+
 }

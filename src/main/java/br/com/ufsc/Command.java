@@ -1,11 +1,15 @@
 package br.com.ufsc;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 public class Command {
   private Integer id;
   private CommandWeight weight;
   private List<Integer> dependencies;
+  private LocalDateTime startTime;
+  private LocalDateTime limitTime;
 
   public Command(Integer id, CommandWeight weight, List<Integer> dependencies) {
     this.weight = weight;
@@ -35,6 +39,15 @@ public class Command {
 
   public void setDependencies(List<Integer> dependencies) {
     this.dependencies = dependencies;
+  }
+
+  public void startProcessing() {
+    startTime = LocalDateTime.now();
+    limitTime = startTime.plus(weight.getProcessingTimeMs(), ChronoUnit.MILLIS);
+  }
+
+  public boolean doneProcessing() {
+    return LocalDateTime.now().isAfter(limitTime);
   }
 
   @Override

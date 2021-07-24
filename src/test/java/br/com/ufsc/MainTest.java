@@ -1,22 +1,17 @@
 package br.com.ufsc;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.Test;
-import java.io.InputStreamReader;
-import org.apache.logging.log4j.Logger;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.slf4j.LoggerFactory;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import java.io.BufferedReader;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 
-public class MainTest { 
+import org.junit.jupiter.api.Test;
+
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+public class MainTest {
   @Test
   public void testLogging() throws Exception {
     Main.main("nnnn");
