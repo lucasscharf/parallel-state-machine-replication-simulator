@@ -6,13 +6,13 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class Scheduler {
+public class DumbScheduler {
   private List<Command> commandsToProcess;
   private Config config;
   private int nextCommand = 0;
   private Logger logger = LogManager.getLogger();
 
-  public Scheduler(List<Command> commandsToProcess, Config config) {
+  public DumbScheduler(List<Command> commandsToProcess, Config config) {
     this.commandsToProcess = commandsToProcess;
     this.config = config;
   }
@@ -45,8 +45,7 @@ public class Scheduler {
     for (int i = 0; i < config.getNumberOfThreads(); i++) {
       Command commandToProcess = commandsToProcess.get(nextCommand);
       nextCommand++;
-      Worker worker = new Worker(this);
-      worker.setCommand(commandToProcess);
+      Worker worker = new Worker();
 
       threads.add(//
           new Thread(() -> {

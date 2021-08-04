@@ -5,19 +5,17 @@ import org.apache.logging.log4j.LogManager;
 
 public class Worker {
 
-  private Scheduler scheduler;
   private final int id;
   private static int id_counter = 0;
   private Command command;
   Logger logger = LogManager.getLogger();
 
-  public Worker(Scheduler scheduler) {
-    this.scheduler = scheduler;
+  public Worker() {
     id = id_counter;
     id_counter++;
   }
 
-  public void setCommand(Command command) {
+  private void setCommand(Command command) {
     this.command = command;
   }
 

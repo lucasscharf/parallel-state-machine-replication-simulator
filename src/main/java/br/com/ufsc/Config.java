@@ -5,22 +5,71 @@ public class Config {
   private Integer mediumProcessingTimeMs;
   private Integer heavyProcessingTimeMs;
 
-  private Integer maxNumberOfDependenciesPerCommand;
+  private Integer percentHeavyCommand;
+  private Integer percentMediumCommand;
+  private Integer percentLightCommand;
+
+  private Integer maxNumberOfDependenciesPerCommand; // number non-inclusive
   private Integer dependencyModulus;
   private Integer numberOfCommands;
 
   private Integer numberOfThreads;
 
+  private Integer timeBetweenChecksMsInInstantThroughputReportGenerator;
+
   public Config() {
     lightProcessingTimeMs = 200;
     mediumProcessingTimeMs = 500;
     heavyProcessingTimeMs = 1500;
+
+    dependencyModulus = 100;
+    maxNumberOfDependenciesPerCommand = 3;
+
+    timeBetweenChecksMsInInstantThroughputReportGenerator = 1000;
+
     numberOfCommands = 100;
     numberOfThreads = 1;
+
+    percentHeavyCommand = 33;
+    percentMediumCommand = 33;
+    percentLightCommand = 33;
+  }
+
+  public Integer getTimeBetweenChecksMsInInstantThroughputReportGenerator() {
+    return timeBetweenChecksMsInInstantThroughputReportGenerator;
+  }
+
+  public void setTimeBetweenChecksMsInInstantThroughputReportGenerator(
+      Integer timeBetweenChecksMsInInstantThroughputReportGenerator) {
+    this.timeBetweenChecksMsInInstantThroughputReportGenerator = timeBetweenChecksMsInInstantThroughputReportGenerator;
   }
 
   public Integer getLightProcessingTimeMs() {
     return lightProcessingTimeMs;
+  }
+
+  public Integer getPercentHeavyCommand() {
+    return percentHeavyCommand;
+  }
+
+  public void setPercentHeavyCommand(Integer percentHeavyCommand) {
+    this.percentHeavyCommand = percentHeavyCommand;
+  }
+
+  public Integer getPercentMediumCommand() {
+    return percentMediumCommand;
+  }
+
+  public void setPercentMediumCommand(Integer percentMediumCommand) {
+    this.percentMediumCommand = percentMediumCommand;
+  }
+
+  public Integer getPercentLightCommand() {
+    return percentLightCommand;
+  }
+
+  public void setPercentLightCommand(Integer percentLightCommand) {
+    this.percentLightCommand = percentLightCommand;
   }
 
   public void setLightProcessingTimeMs(Integer lightProcessingTimeMs) {
