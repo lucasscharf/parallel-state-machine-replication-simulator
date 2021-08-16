@@ -9,7 +9,7 @@ public class DumbSchedulerTest {
   @Test
   public void schedulerTesting() throws InterruptedException {
     Config config = new Config();
-    config.setNumberOfCommands(100);
+    config.setNumberOfCommands(5);
     config.setNumberOfThreads(3);
     config.setHeavyProcessingTimeMs(100);
     CommandWeight.config = config;

@@ -45,7 +45,7 @@ public class DumbScheduler {
     for (int i = 0; i < config.getNumberOfThreads(); i++) {
       Command commandToProcess = commandsToProcess.get(nextCommand);
       nextCommand++;
-      Worker worker = new Worker();
+      Worker worker = new Worker(null);
 
       threads.add(//
           new Thread(() -> {

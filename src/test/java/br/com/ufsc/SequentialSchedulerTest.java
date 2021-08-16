@@ -10,7 +10,7 @@ public class SequentialSchedulerTest {
   public void schedulerTesting() throws InterruptedException {
     Config config = new Config();
     config.setNumberOfCommands(500);
-    config.setNumberOfThreads(1);
+    config.setNumberOfThreads(5);
     config.setLightProcessingTimeMs(10);
     config.setMediumProcessingTimeMs(50);
     config.setHeavyProcessingTimeMs(100);
@@ -22,11 +22,14 @@ public class SequentialSchedulerTest {
 
     ReportGenerator reportGenerator = new ReportGenerator(commandsToProcess, config);
     SequentialScheduler scheduler = new SequentialScheduler(commandsToProcess, config);
-    InstantThroughputReportGenerator instantThroughputReportGenerator = new InstantThroughputReportGenerator(config, scheduler.getRemainingCommands());
+    InstantThroughputReportGenerator instantThroughputReportGenerator = new InstantThroughputReportGenerator(config, scheduler.getCommandsExecuted());
 
     reportGenerator.startRegistering();
     instantThroughputReportGenerator.startRegistering();
     scheduler.startScheduling();
+
+    while(scheduler.hasNext()) {
+    }
     
     reportGenerator.registerEndTime();
 

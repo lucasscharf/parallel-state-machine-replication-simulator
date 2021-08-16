@@ -10,8 +10,6 @@ public enum CommandWeight {
     this.id = id;
   }
 
-
-
   public int getProcessingTimeMs() {
     switch (this) {
       case HEAVY:

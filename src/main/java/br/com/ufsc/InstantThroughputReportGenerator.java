@@ -2,6 +2,8 @@ package br.com.ufsc;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.AbstractMap.SimpleEntry;
@@ -12,8 +14,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class InstantThroughputReportGenerator {
-  private AtomicInteger remainingCommandsToExecuteSize;
+  private AtomicInteger commandsExecuted;
   private List<SimpleEntry<LocalDateTime, Integer>> throughputs;
+  private List<SimpleEntry<LocalDateTime, Integer>> commandsProcessed;
   private Integer timeBetweenChecks;
   private Integer lastCommandCount;
   private LocalDateTime lastCommandTime;
@@ -22,7 +25,7 @@ public class InstantThroughputReportGenerator {
 
   @SuppressWarnings("unchecked")
   private Thread monitor = new Thread(() -> {
-    while (remainingCommandsToExecuteSize.get() > 0) {
+    while (true) {
       LocalDateTime now = LocalDateTime.now();
 
       Duration duration = Duration.between(lastCommandTime, now);
@@ -37,11 +40,12 @@ public class InstantThroughputReportGenerator {
         // TODO ignore
       }
 
-      Integer commandCount = remainingCommandsToExecuteSize.get();
-      Integer commandDiff = lastCommandCount - commandCount;
+      Integer commandCount = commandsExecuted.get();
+      Integer commandDiff = commandCount - lastCommandCount;
       Integer throughput = (commandDiff) / durationTime;
 
       throughputs.add(new SimpleEntry(now, throughput));
+      commandsProcessed.add(new SimpleEntry(now, commandCount));
 
       lastCommandCount = commandCount;
       lastCommandTime = now;
@@ -54,14 +58,15 @@ public class InstantThroughputReportGenerator {
     }
   });
 
-  public InstantThroughputReportGenerator(Config config, AtomicInteger remainingCommandsToExecuteSize) {
+  public InstantThroughputReportGenerator(Config config, AtomicInteger commandsExecuted) {
     this.config = config;
-    this.remainingCommandsToExecuteSize = remainingCommandsToExecuteSize;
+    this.commandsExecuted = commandsExecuted;
     this.lastCommandCount = config.getNumberOfCommands();
     this.lastCommandTime = LocalDateTime.now();
 
     timeBetweenChecks = config.getTimeBetweenChecksMsInInstantThroughputReportGenerator();
     throughputs = new ArrayList<>();
+    commandsProcessed = new ArrayList<>();
   }
 
   public void startRegistering() {
@@ -74,5 +79,13 @@ public class InstantThroughputReportGenerator {
     for (SimpleEntry<LocalDateTime, Integer> throughput : throughputs) {
       logger.info("[{}] -> [{}] messages/s", throughput.getKey(), throughput.getValue());
     }
+
+    logger.info("Commands processed without processing:");
+    for (SimpleEntry<LocalDateTime, Integer> commandsProcessed : commandsProcessed) {
+      System.out.println(String.format("%s,%s", //
+          commandsProcessed.getKey().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli(), //
+          commandsProcessed.getValue()));
+    }
+
   }
 }

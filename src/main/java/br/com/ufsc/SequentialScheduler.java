@@ -3,31 +3,39 @@ package br.com.ufsc;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-public class SequentialScheduler {
+public class SequentialScheduler implements Scheduler {
   private List<Command> commandsToProcess;
-  private Logger logger = LogManager.getLogger();
-  private AtomicInteger remainingCommands;
+
+  Config config;
+  private AtomicInteger commandsExecuted;
 
   public SequentialScheduler(List<Command> commandsToProcess, Config config) {
     this.commandsToProcess = commandsToProcess;
-    remainingCommands = new AtomicInteger();
-    remainingCommands.set(config.getNumberOfCommands());
+    commandsExecuted = new AtomicInteger();
+    this.config = config;
   }
 
   public void startScheduling() {
-    for (int i = 0; i < commandsToProcess.size(); i++) {
-      Command command = commandsToProcess.get(i);
-      Worker worker = new Worker();
-      worker.processing(command);
-      remainingCommands.set(commandsToProcess.size() - i);
+    for (int i = 0; i < config.getNumberOfThreads(); i++) {
+      Worker worker = new Worker(this);
+
+      new Thread(worker).start();
     }
   }
 
-  public AtomicInteger getRemainingCommands() {
-    return remainingCommands;
+  public AtomicInteger getCommandsExecuted() {
+    return commandsExecuted;
   }
 
+  public boolean hasNext() {
+    return commandsToProcess.size() > commandsExecuted.get();
+  }
+
+  public Command getNextCommand() {
+    return commandsToProcess.get(commandsExecuted.get());
+  }
+
+  public void finalizedCommand() {
+    commandsExecuted.incrementAndGet();
+  }
 }
