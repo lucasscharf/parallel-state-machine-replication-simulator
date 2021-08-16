@@ -21,7 +21,7 @@ public class SequentialSchedulerTest {
     List<Command> commandsToProcess = commandGenerator.generateCommands();
 
     ReportGenerator reportGenerator = new ReportGenerator(commandsToProcess, config);
-    SequentialScheduler scheduler = new SequentialScheduler(commandsToProcess, config);
+    KotlaScheduler scheduler = new KotlaScheduler(commandsToProcess, config);
     InstantThroughputReportGenerator instantThroughputReportGenerator = new InstantThroughputReportGenerator(config, scheduler.getCommandsExecuted());
 
     reportGenerator.startRegistering();

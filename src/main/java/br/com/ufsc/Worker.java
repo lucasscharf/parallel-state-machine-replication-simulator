@@ -9,7 +9,7 @@ public class Worker implements Runnable {
   private static int id_counter = 0;
   private Command command;
   Logger logger = LogManager.getLogger();
-  private Scheduler1 scheduler;
+  private Scheduler scheduler;
 
   public Worker(Scheduler scheduler) {
     id = id_counter;
