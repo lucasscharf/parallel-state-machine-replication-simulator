@@ -8,7 +8,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class ReportGenerator {
-  private static final int MILLI_MULTIPLIER = 1000;
+  private static final Double MILLI_MULTIPLIER = 1000d;
   private LocalDateTime startTime;
   private LocalDateTime endTime;
   private Config config;
@@ -37,7 +37,7 @@ public class ReportGenerator {
 
     Double speedup = (double) theoreticalTimeMs / (double) makepan;
     Double efficiency = 1.0 / speedup;
-    Long meanThroughput = config.getNumberOfCommands() / (makepan / MILLI_MULTIPLIER);
+    Double meanThroughput = config.getNumberOfCommands() / (makepan / MILLI_MULTIPLIER);
 
     logger.info("Number of threads [{}]", config.getNumberOfThreads());
     logger.trace("theoretical time: [{}] ms", theoreticalTimeMs);

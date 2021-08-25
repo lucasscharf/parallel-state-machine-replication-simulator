@@ -4,12 +4,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
 public class KotlaScheduler implements Scheduler {
+  public static final int WITHOUT_PARENT = -1;
   // If the boolean in position (i,j) true so the command i deppends on command j
   boolean[][] commandsDag;
+  public int[] commandParent;
   private List<Command> commandsToProcess;
   Config config;
   private AtomicInteger commandsExecuted;
+  Logger logger = LogManager.getLogger();
 
   /**
    * Ao adicionar um novo comando, o sistema verificará se o novo comando tem
@@ -27,11 +33,12 @@ public class KotlaScheduler implements Scheduler {
     this.commandsExecuted = new AtomicInteger();
     this.config = config;
     this.commandsDag = new boolean[commandsToProcess.size()][commandsToProcess.size()];
+    this.commandParent = new int[commandsToProcess.size()];
 
     // building dag
     for (int i = 0; i < commandsToProcess.size(); i++) {
       Command commandToAdd = commandsToProcess.get(i);
-
+      commandParent[i] = WITHOUT_PARENT;
       for (int j = 0; j < i; j++) {
         Command commandToCompare = commandsToProcess.get(j);
         if (hasSameDependencies(commandToAdd, commandToCompare)) {
@@ -40,6 +47,7 @@ public class KotlaScheduler implements Scheduler {
           for (Integer lastElement : allLastElementsInDag) {
             // adding the new element in the dag
             commandsDag[i][lastElement] = true;
+            commandParent[i] = lastElement;
           }
         }
       }
@@ -64,15 +72,13 @@ public class KotlaScheduler implements Scheduler {
   }
 
   private Integer getLastPositionInDag(Integer dependenciesToCompare, Command commandToCompare) {
-    Integer nodeIndex = commandToCompare.getId();
+    Integer commandId = commandToCompare.getId();
 
-    for (int i = 0; i < commandsDag.length; i++) {
-      Command commmandCandidate = commandsToProcess.get(i);
-      if (commandsDag[i][nodeIndex] && hasDependency(dependenciesToCompare, commmandCandidate)) {
-        return getLastPositionInDag(dependenciesToCompare, commmandCandidate);
-      }
+    while(commandParent[commandId] !=WITHOUT_PARENT) {
+      commandId = commandParent[commandId] ;
     }
-    return commandToCompare.getId();
+
+    return commandId;
   }
 
   public void startScheduling() {
@@ -102,13 +108,29 @@ public class KotlaScheduler implements Scheduler {
   private boolean hasSameDependencies(Command command1, Command command2) {
     List<Integer> dependencies1 = command1.getDependencies();
     List<Integer> dependencies2 = command2.getDependencies();
+    Integer dep11 = null;
+    Integer dep12 = null;
+    Integer dep21 = null;
+    Integer dep22 = null;
+    if (dependencies1.isEmpty() || dependencies2.isEmpty())
+      return false;
 
-    for (int i = 0; i < dependencies1.size(); i++) {
-      for (int j = 0; j < dependencies2.size(); j++) {
-        if (dependencies1.get(i) == dependencies2.get(j))
-          return true;
-      }
-    }
+    if (dependencies1.size() >= 1)
+      dep11 = dependencies1.get(0);
+
+    if (dependencies2.size() >= 1)
+      dep21 = dependencies1.get(0);
+
+    if (dependencies1.size() >= 2)
+      dep12 = dependencies1.get(0);
+
+    if (dependencies1.size() >= 2)
+      dep22 = dependencies1.get(0);
+
+    if (dep11 == dep21 || dep11 == dep22)
+      return true;
+    if (dep12 == dep21 || (dep12 == dep22 && dep12 != null))
+      return true;
     return false;
   }
 
