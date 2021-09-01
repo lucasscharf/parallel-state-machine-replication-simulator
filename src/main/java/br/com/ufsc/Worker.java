@@ -27,13 +27,10 @@ public class Worker implements Runnable {
 
   public void processing(Command commandToProcess) {
     setCommand(commandToProcess);
-    logger.trace("Worker [{}] starting processing command [{}] with weight [{}]", getId(), command.getId(),
-        command.getWeight());
     command.startProcessing();
     while (!command.doneProcessing()) {
       int i = 0; // dumb processing
     }
-    logger.trace("Worker [{}] done processing command [{}]", getId(), command.getId());
   }
 
   public void run() {

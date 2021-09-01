@@ -1,10 +1,13 @@
 package br.com.ufsc;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
-public class Command {
+public class Command implements Serializable {
+  private static final long serialVersionUID = 1L;
+  
   private Integer id;
   private CommandWeight weight;
   private List<Integer> dependencies;

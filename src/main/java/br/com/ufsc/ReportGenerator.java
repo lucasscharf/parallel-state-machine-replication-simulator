@@ -36,7 +36,7 @@ public class ReportGenerator {
     Long differeceBetweenTheoreticalTimeAndMakespamMs = makepan - theoreticalTimeMs;
 
     Double speedup = (double) theoreticalTimeMs / (double) makepan;
-    Double efficiency = 1.0 / speedup;
+    Double efficiency = 100 * speedup / config.getNumberOfThreads();
     Double meanThroughput = config.getNumberOfCommands() / (makepan / MILLI_MULTIPLIER);
 
     logger.info("Number of threads [{}]", config.getNumberOfThreads());

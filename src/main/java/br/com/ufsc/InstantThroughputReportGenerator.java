@@ -58,6 +58,26 @@ public class InstantThroughputReportGenerator {
     }
   });
 
+  @SuppressWarnings("unchecked")
+  private void updateTimes(LocalDateTime now) {
+    Duration duration = Duration.between(lastCommandTime, now);
+    Integer durationTime = (int) duration.get(ChronoUnit.SECONDS);
+
+    if (durationTime == 0)
+      durationTime = 1;
+
+    Integer commandCount = commandsExecuted.get();
+    Integer commandDiff = commandCount - lastCommandCount;
+    Integer throughput = (commandDiff) / durationTime;
+
+    throughputs.add(new SimpleEntry(now, throughput));
+    commandsProcessed.add(new SimpleEntry(now, commandCount));
+
+    lastCommandCount = commandCount;
+    lastCommandTime = now;
+
+  }
+
   public InstantThroughputReportGenerator(Config config, AtomicInteger commandsExecuted) {
     this.config = config;
     this.commandsExecuted = commandsExecuted;
@@ -75,10 +95,9 @@ public class InstantThroughputReportGenerator {
   }
 
   public void generateReport() {
+    updateTimes(LocalDateTime.now());
+    logger.info("Config [{}]", config);
     logger.info("Instant throughput:");
-    for (SimpleEntry<LocalDateTime, Integer> throughput : throughputs) {
-      logger.info("[{}] -> [{}] messages/s", throughput.getKey(), throughput.getValue());
-    }
 
     logger.info("Commands processed without processing:");
     for (SimpleEntry<LocalDateTime, Integer> commandsProcessed : commandsProcessed) {

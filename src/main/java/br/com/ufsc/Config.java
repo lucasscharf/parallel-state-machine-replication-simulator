@@ -16,6 +16,8 @@ public class Config {
   private Integer numberOfThreads;
 
   private Integer timeBetweenChecksMsInInstantThroughputReportGenerator;
+  private final static String DONT_SAVE = "AAAAAAAAAAa"; 
+  private String fileName = DONT_SAVE;
 
   public Config() {
     lightProcessingTimeMs = 200;
@@ -25,7 +27,7 @@ public class Config {
     dependencyModulus = 100;
     maxNumberOfDependenciesPerCommand = 3;
 
-    timeBetweenChecksMsInInstantThroughputReportGenerator = 1000;
+    timeBetweenChecksMsInInstantThroughputReportGenerator = 1_000;
 
     numberOfCommands = 100;
     numberOfThreads = 1;
@@ -106,6 +108,7 @@ public class Config {
 
   public void setMaxNumberOfDependenciesPerCommand(Integer maxNumberOfDependenciesPerCommand) {
     this.maxNumberOfDependenciesPerCommand = maxNumberOfDependenciesPerCommand;
+    this.maxNumberOfDependenciesPerCommand++;
   }
 
   public Integer getNumberOfCommands() {
@@ -122,6 +125,51 @@ public class Config {
 
   public void setNumberOfThreads(Integer numberOfThreads) {
     this.numberOfThreads = numberOfThreads;
+  }
+
+  public String getFileName() {
+    return fileName;
+  }
+
+  public void setFileName(String fileName) {
+    this.fileName = fileName;
+  }
+
+  public boolean saveFile() {
+    return !fileName.equals(DONT_SAVE);
+  }
+
+  public boolean loadFile() {
+    return saveFile();
+  }
+
+  @Override
+  public String toString() {
+    StringBuilder builder = new StringBuilder();
+    builder.append("Config [dependencyModulus=");
+    builder.append(dependencyModulus);
+    builder.append(", heavyProcessingTimeMs=");
+    builder.append(heavyProcessingTimeMs);
+    builder.append(", lightProcessingTimeMs=");
+    builder.append(lightProcessingTimeMs);
+    builder.append(", maxNumberOfDependenciesPerCommand=");
+    builder.append(maxNumberOfDependenciesPerCommand);
+    builder.append(", mediumProcessingTimeMs=");
+    builder.append(mediumProcessingTimeMs);
+    builder.append(", numberOfCommands=");
+    builder.append(numberOfCommands);
+    builder.append(", numberOfThreads=");
+    builder.append(numberOfThreads);
+    builder.append(", percentHeavyCommand=");
+    builder.append(percentHeavyCommand);
+    builder.append(", percentLightCommand=");
+    builder.append(percentLightCommand);
+    builder.append(", percentMediumCommand=");
+    builder.append(percentMediumCommand);
+    builder.append(", timeBetweenChecksMsInInstantThroughputReportGenerator=");
+    builder.append(timeBetweenChecksMsInInstantThroughputReportGenerator);
+    builder.append("]");
+    return builder.toString();
   }
 
 }
