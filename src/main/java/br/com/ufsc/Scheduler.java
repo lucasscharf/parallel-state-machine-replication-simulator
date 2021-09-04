@@ -10,4 +10,8 @@ public interface Scheduler {
   public Command getNextCommand();
 
   public void finalizedCommand();
+
+  public boolean hasFinalizedGeneratingCommands();
+
+  public boolean hasFinalizedProccessing();
 }

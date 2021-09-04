@@ -26,17 +26,29 @@ public class Worker implements Runnable {
   }
 
   public void processing(Command commandToProcess) {
+    // logger.trace("Start processing [{}]", commandToProcess);
     setCommand(commandToProcess);
     command.startProcessing();
     while (!command.doneProcessing()) {
       int i = 0; // dumb processing
     }
+
+    // logger.trace("End processing [{}]", commandToProcess);
   }
 
   public void run() {
-    while(scheduler.hasNext()) {
-      Command command = scheduler.getNextCommand();
+    logger.traceEntry("Running...");
+    while (scheduler.hasNext() || !scheduler.hasFinalizedGeneratingCommands()) {
+      logger.trace("Get next command");
+      Command command;
+      while ((command = scheduler.getNextCommand()) == null) {
+        if (scheduler.hasFinalizedProccessing())
+          return;
+        logger.trace("Command not found");
+      }
+      logger.trace("Processing command [{}]", command.getId());
       processing(command);
+      logger.trace("Finalized command [{}]", command.getId());
       scheduler.finalizedCommand();
     }
   }

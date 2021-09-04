@@ -1,9 +1,12 @@
 package br.com.ufsc;
 
+import java.time.LocalDateTime;
+
 public class Config {
   private Integer lightProcessingTimeMs;
   private Integer mediumProcessingTimeMs;
   private Integer heavyProcessingTimeMs;
+  private Boolean parallelOperation;
 
   private Integer percentHeavyCommand;
   private Integer percentMediumCommand;
@@ -18,6 +21,8 @@ public class Config {
   private Integer timeBetweenChecksMsInInstantThroughputReportGenerator;
   private final static String DONT_SAVE = "AAAAAAAAAAa"; 
   private String fileName = DONT_SAVE;
+  private LocalDateTime maxTimeExecution;
+  private Integer executionTimeMs;
 
   public Config() {
     lightProcessingTimeMs = 200;
@@ -35,10 +40,20 @@ public class Config {
     percentHeavyCommand = 33;
     percentMediumCommand = 33;
     percentLightCommand = 33;
+
+    parallelOperation = false;
   }
 
   public Integer getTimeBetweenChecksMsInInstantThroughputReportGenerator() {
     return timeBetweenChecksMsInInstantThroughputReportGenerator;
+  }
+
+  public Boolean getParallelOperation() {
+    return parallelOperation;
+  }
+
+  public void setParallelOperation(Boolean parallelOperation) {
+    this.parallelOperation = parallelOperation;
   }
 
   public void setTimeBetweenChecksMsInInstantThroughputReportGenerator(
@@ -143,33 +158,41 @@ public class Config {
     return saveFile();
   }
 
-  @Override
-  public String toString() {
-    StringBuilder builder = new StringBuilder();
-    builder.append("Config [dependencyModulus=");
-    builder.append(dependencyModulus);
-    builder.append(", heavyProcessingTimeMs=");
-    builder.append(heavyProcessingTimeMs);
-    builder.append(", lightProcessingTimeMs=");
-    builder.append(lightProcessingTimeMs);
-    builder.append(", maxNumberOfDependenciesPerCommand=");
-    builder.append(maxNumberOfDependenciesPerCommand);
-    builder.append(", mediumProcessingTimeMs=");
-    builder.append(mediumProcessingTimeMs);
-    builder.append(", numberOfCommands=");
-    builder.append(numberOfCommands);
-    builder.append(", numberOfThreads=");
-    builder.append(numberOfThreads);
-    builder.append(", percentHeavyCommand=");
-    builder.append(percentHeavyCommand);
-    builder.append(", percentLightCommand=");
-    builder.append(percentLightCommand);
-    builder.append(", percentMediumCommand=");
-    builder.append(percentMediumCommand);
-    builder.append(", timeBetweenChecksMsInInstantThroughputReportGenerator=");
-    builder.append(timeBetweenChecksMsInInstantThroughputReportGenerator);
-    builder.append("]");
-    return builder.toString();
-  }
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("Config [dependencyModulus=");
+		builder.append(dependencyModulus);
+		builder.append(", executionTimeMs=");
+		builder.append(executionTimeMs);
+		builder.append(", fileName=");
+		builder.append(fileName);
+		builder.append(", heavyProcessingTimeMs=");
+		builder.append(heavyProcessingTimeMs);
+		builder.append(", lightProcessingTimeMs=");
+		builder.append(lightProcessingTimeMs);
+		builder.append(", maxNumberOfDependenciesPerCommand=");
+		builder.append(maxNumberOfDependenciesPerCommand);
+		builder.append(", maxTimeExecution=");
+		builder.append(maxTimeExecution);
+		builder.append(", mediumProcessingTimeMs=");
+		builder.append(mediumProcessingTimeMs);
+		builder.append(", numberOfCommands=");
+		builder.append(numberOfCommands);
+		builder.append(", numberOfThreads=");
+		builder.append(numberOfThreads);
+		builder.append(", parallelOperation=");
+		builder.append(parallelOperation);
+		builder.append(", percentHeavyCommand=");
+		builder.append(percentHeavyCommand);
+		builder.append(", percentLightCommand=");
+		builder.append(percentLightCommand);
+		builder.append(", percentMediumCommand=");
+		builder.append(percentMediumCommand);
+		builder.append(", timeBetweenChecksMsInInstantThroughputReportGenerator=");
+		builder.append(timeBetweenChecksMsInInstantThroughputReportGenerator);
+		builder.append("]");
+		return builder.toString();
+	}
 
 }

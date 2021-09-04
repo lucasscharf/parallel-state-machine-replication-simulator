@@ -38,4 +38,14 @@ public class SequentialScheduler implements Scheduler {
   public void finalizedCommand() {
     commandsExecuted.incrementAndGet();
   }
+
+  @Override
+  public boolean hasFinalizedGeneratingCommands() {
+    return false;
+  }
+
+  @Override
+  public boolean hasFinalizedProccessing() {
+    return false;
+  }
 }

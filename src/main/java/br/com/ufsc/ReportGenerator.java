@@ -14,13 +14,13 @@ public class ReportGenerator {
   private Config config;
   private Long theoreticalTimeMs;
   private Logger logger = LogManager.getLogger();
+  private List<Command> commands;
 
   public ReportGenerator(List<Command> commands, Config config) {
+    this.commands = commands;
     this.config = config;
-    theoreticalTimeMs = 0L;
-    for (Command command : commands) {
-      theoreticalTimeMs += command.getWeight().getProcessingTimeMs();
-    }
+    this.theoreticalTimeMs = 0L;
+
   }
 
   public void startRegistering() {
@@ -32,6 +32,10 @@ public class ReportGenerator {
   }
 
   public void generateReport() {
+    for (Command command : commands) {
+      theoreticalTimeMs += command.getWeight().getProcessingTimeMs();
+    }
+
     Long makepan = Duration.between(startTime, endTime).toMillis();
     Long differeceBetweenTheoreticalTimeAndMakespamMs = makepan - theoreticalTimeMs;
 

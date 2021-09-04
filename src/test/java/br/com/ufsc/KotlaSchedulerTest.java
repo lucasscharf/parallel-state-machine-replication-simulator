@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -208,12 +209,13 @@ public class KotlaSchedulerTest {
   @Test
   public void schedulerTesting() throws InterruptedException {
     Config config = new Config();
-    config.setNumberOfCommands(100_000);
+    config.setNumberOfCommands(1_000);
     config.setNumberOfThreads(2);
     config.setLightProcessingTimeMs(50);
     config.setMediumProcessingTimeMs(100);
     config.setHeavyProcessingTimeMs(200);
     config.setMaxNumberOfDependenciesPerCommand(2);
+    config.setParallelOperation(false);
     config.setFileName("fileName_grande");
 
     CommandWeight.config = config;
@@ -231,6 +233,43 @@ public class KotlaSchedulerTest {
     scheduler.startScheduling();
 
     while (scheduler.hasNext()) {
+    }
+
+    reportGenerator.registerEndTime();
+
+    reportGenerator.generateReport();
+    instantThroughputReportGenerator.generateReport();
+  }
+
+  @Test
+  public void schedulerTestingWithParallelOperations() throws InterruptedException {
+    Config config = new Config();
+    config.setNumberOfCommands(50_000);
+    config.setNumberOfThreads(1);
+    config.setLightProcessingTimeMs(0);
+    config.setMediumProcessingTimeMs(0);
+    config.setHeavyProcessingTimeMs(0);
+    config.setMaxNumberOfDependenciesPerCommand(4);
+    config.setParallelOperation(true);
+
+    CommandWeight.config = config;
+
+    CommandGenerator commandGenerator = new CommandGenerator(config);
+    List<Command> commandsToProcess = Collections.synchronizedList(new ArrayList<>());
+
+    commandGenerator.generateCommandsInteractively(commandsToProcess);
+    ;
+
+    ReportGenerator reportGenerator = new ReportGenerator(commandsToProcess, config);
+    KotlaScheduler scheduler = new KotlaScheduler(commandsToProcess, config);
+    InstantThroughputReportGenerator instantThroughputReportGenerator = new InstantThroughputReportGenerator(config,
+        scheduler.getCommandsExecuted());
+
+    reportGenerator.startRegistering();
+    instantThroughputReportGenerator.startRegistering();
+    scheduler.startScheduling();
+
+    while (!scheduler.hasFinalizedProccessing()) {
     }
 
     reportGenerator.registerEndTime();

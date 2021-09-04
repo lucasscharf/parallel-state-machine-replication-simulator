@@ -33,9 +33,7 @@ public class CommandGenerator {
     }
 
     List<Command> commands = new ArrayList<>();
-    for (int i = 0; i < config.getNumberOfCommands(); i++) {
-      commands.add(new Command(i, fabricateCommandWeight(), fabricateDependencies()));
-    }
+    generateCommandsBySize(commands);
 
     if (config.saveFile()) {
       try (FileOutputStream fo = new FileOutputStream(new File(config.getFileName()));
@@ -47,6 +45,18 @@ public class CommandGenerator {
       }
     }
     return commands;
+  }
+
+  public void generateCommandsInteractively(List<Command> commands) {
+    new Thread(() -> {
+      generateCommandsBySize(commands);
+    }).start();
+  }
+
+  private void generateCommandsBySize(List<Command> commands) {
+    for (int i = 0; i < config.getNumberOfCommands(); i++) {
+      commands.add(new Command(i, fabricateCommandWeight(), fabricateDependencies()));
+    }
   }
 
   private CommandWeight fabricateCommandWeight() {
