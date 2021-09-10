@@ -1,5 +1,6 @@
 package br.com.ufsc;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -45,11 +46,11 @@ public class KotlaScheduler implements Scheduler {
     for (int i = 0; i < commandsToProcess.size(); i++) {
       addCommandToGraph(i);
     }
-    logger.trace("Graph edgeSet size [{}]", graph.edgeSet().size());
+    // logger.trace("Graph edgeSet size [{}]", graph.edgeSet().size());
   }
 
   private void addCommandToGraph(int commandPosition) {
-    logger.trace("Adding command [{}] in graph", commandPosition);
+    // logger.trace("Adding command [{}] in graph", commandPosition);
     Command commandToAdd = commandsToProcess.get(commandPosition);
     graph.addVertex(commandToAdd);
 
@@ -74,23 +75,36 @@ public class KotlaScheduler implements Scheduler {
     }
 
     while (!hasFinalizedGeneratingCommands()) {
-      Integer maxCommandsToAdd = commandsToProcess.size();
-      for (int i = currentCommandToAdd; i < maxCommandsToAdd; i++) {
-        logger.trace("Get lock to add command in graph. Get lock");
+      for (int i = currentCommandToAdd; (i < commandsToProcess.size() && !hasFinalizedTime()); i++) {
+        currentCommandToAdd++;
+        // logger.trace(
+        // "Get lock to add command in graph. Get lock. Max command to add [{}]
+        // commandsToProcess.slze [{}]. Add command [{}]. Graph size [{}]",
+        // maxCommandsToAdd, commandsToProcess.size(), i, graph.vertexSet().size());
+        // System.out.println("Get lock to add command in graph. Get lock.
+        // commandsToProcess.slze ["
+        // + commandsToProcess.size() + "]. Add command [" + i + "]. Graph size [" +
+        // graph.vertexSet().size() + "]");
         synchronized (lock) {
           addCommandToGraph(i);
         }
-        logger.trace("Release lock to add command in graph. Release lock");
-      }
 
-      try {
-        currentCommandToAdd = maxCommandsToAdd;
-        logger.debug("Sleep scheduling...");
-        Thread.sleep(100);
-      } catch (InterruptedException e) {
-        // DO NOTHING
+        if (i % 3000 == 555) {
+          try {
+            logger.info(
+                "We will sleep to let others threads work. i [{}]. commandsToProcess.slze [{}]. Added command [{}]. Graph size [{}]. Proccessed commands [{}]", //
+                i, commandsToProcess.size(), i, graph.vertexSet().size(),  commandsExecuted.get() );
+            Thread.sleep(1500L);
+          } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+          }
+        }
+        // logger.trace("Release lock to add command in graph. Release lock");
       }
+      // logger.debug("Added a lot of commands.");
     }
+    logger.debug("Has finalized generate commands.");
   }
 
   public AtomicInteger getCommandsExecuted() {
@@ -98,17 +112,22 @@ public class KotlaScheduler implements Scheduler {
   }
 
   public boolean hasNext() {
-    logger.trace("Calling has next. Get lock");
+    // logger.trace("Calling has next. Get lock");
+    if (config.isTimeBasedExecution() && LocalDateTime.now().isAfter(config.getMaxTimeExecution()))
+      return false;
     Boolean hasNextCommand;
     synchronized (lock) {
       hasNextCommand = !graph.vertexSet().isEmpty();
     }
-    logger.trace("Calling has next with value [{}]. Release lock", hasNextCommand);
+    // logger.trace("Calling has next with value [{}]. Release lock",
+    // hasNextCommand);
     return hasNextCommand;
   }
 
   public Command getNextCommand() {
-    logger.trace("Get next command. Get lock");
+    // logger.trace("Get next command. Get lock");
+    if (config.isTimeBasedExecution() && LocalDateTime.now().isAfter(config.getMaxTimeExecution()))
+      return null;
     Command commandToExecute;
     synchronized (lock) {
       commandToExecute = graph //
@@ -117,20 +136,38 @@ public class KotlaScheduler implements Scheduler {
       if (commandToExecute != null)
         graph.removeVertex(commandToExecute);//
     }
-    logger.trace("Get next command. Release lock");
+    // logger.trace("Get next command. Release lock");
     return commandToExecute;
   }
 
   public boolean hasFinalizedProccessing() {
-    logger.trace("Checking if finalized commands executed [{}] and number of commands [{}] commandsToProcess [{}]", //
-         commandsExecuted.get(), config.getNumberOfCommands(), graph.vertexSet().size());
+    if (config.isTimeBasedExecution()) {
+      return LocalDateTime.now().isAfter(config.getMaxTimeExecution());
+    }
+    // logger.trace("Checking if finalized commands executed [{}] and number of
+    // commands [{}] commandsToProcess [{}]", //
+    // commandsExecuted.get(), config.getNumberOfCommands(),
+    // graph.vertexSet().size());
     return commandsExecuted.get() >= config.getNumberOfCommands();
   }
 
   public boolean hasFinalizedGeneratingCommands() {
-    logger.trace("Checking if finalized commands executed [{}] and number of commands [{}] commandsToProcess [{}] commands generated [{}]", //
-         commandsExecuted.get(), config.getNumberOfCommands(), graph.vertexSet().size(), currentCommandToAdd);
+    if (config.isTimeBasedExecution()) {
+      return LocalDateTime.now().isAfter(config.getMaxTimeExecution());
+    }
+    // logger.trace(
+    // "Checking if finalized commands executed [{}] and number of commands [{}]
+    // commandsToProcess [{}] commands generated [{}]", //
+    // commandsExecuted.get(), config.getNumberOfCommands(),
+    // graph.vertexSet().size(), currentCommandToAdd);
     return currentCommandToAdd >= config.getNumberOfCommands();
+  }
+
+  private boolean hasFinalizedTime() {
+    if (config.isTimeBasedExecution()) {
+      return LocalDateTime.now().isAfter(config.getMaxTimeExecution());
+    }
+    return false;
   }
 
   public void finalizedCommand() {

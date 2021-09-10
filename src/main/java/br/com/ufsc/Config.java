@@ -1,6 +1,7 @@
 package br.com.ufsc;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 public class Config {
   private Integer lightProcessingTimeMs;
@@ -19,7 +20,7 @@ public class Config {
   private Integer numberOfThreads;
 
   private Integer timeBetweenChecksMsInInstantThroughputReportGenerator;
-  private final static String DONT_SAVE = "AAAAAAAAAAa"; 
+  private final static String DONT_SAVE = "AAAAAAAAAAa";
   private String fileName = DONT_SAVE;
   private LocalDateTime maxTimeExecution;
   private Integer executionTimeMs;
@@ -34,7 +35,7 @@ public class Config {
 
     timeBetweenChecksMsInInstantThroughputReportGenerator = 1_000;
 
-    numberOfCommands = 100;
+    numberOfCommands = null;
     numberOfThreads = 1;
 
     percentHeavyCommand = 33;
@@ -42,6 +43,19 @@ public class Config {
     percentLightCommand = 33;
 
     parallelOperation = false;
+  }
+
+  public LocalDateTime getMaxTimeExecution() {
+    return maxTimeExecution;
+  }
+
+  public boolean isTimeBasedExecution() {
+    return maxTimeExecution != null;
+  }
+
+  public void setExecutionTimeMs(Integer executionTimeMs) {
+    this.executionTimeMs = executionTimeMs;
+    maxTimeExecution = LocalDateTime.now().plus(executionTimeMs, ChronoUnit.MILLIS);
   }
 
   public Integer getTimeBetweenChecksMsInInstantThroughputReportGenerator() {
@@ -158,41 +172,41 @@ public class Config {
     return saveFile();
   }
 
-	@Override
-	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append("Config [dependencyModulus=");
-		builder.append(dependencyModulus);
-		builder.append(", executionTimeMs=");
-		builder.append(executionTimeMs);
-		builder.append(", fileName=");
-		builder.append(fileName);
-		builder.append(", heavyProcessingTimeMs=");
-		builder.append(heavyProcessingTimeMs);
-		builder.append(", lightProcessingTimeMs=");
-		builder.append(lightProcessingTimeMs);
-		builder.append(", maxNumberOfDependenciesPerCommand=");
-		builder.append(maxNumberOfDependenciesPerCommand);
-		builder.append(", maxTimeExecution=");
-		builder.append(maxTimeExecution);
-		builder.append(", mediumProcessingTimeMs=");
-		builder.append(mediumProcessingTimeMs);
-		builder.append(", numberOfCommands=");
-		builder.append(numberOfCommands);
-		builder.append(", numberOfThreads=");
-		builder.append(numberOfThreads);
-		builder.append(", parallelOperation=");
-		builder.append(parallelOperation);
-		builder.append(", percentHeavyCommand=");
-		builder.append(percentHeavyCommand);
-		builder.append(", percentLightCommand=");
-		builder.append(percentLightCommand);
-		builder.append(", percentMediumCommand=");
-		builder.append(percentMediumCommand);
-		builder.append(", timeBetweenChecksMsInInstantThroughputReportGenerator=");
-		builder.append(timeBetweenChecksMsInInstantThroughputReportGenerator);
-		builder.append("]");
-		return builder.toString();
-	}
+  @Override
+  public String toString() {
+    StringBuilder builder = new StringBuilder();
+    builder.append("Config [dependencyModulus=");
+    builder.append(dependencyModulus);
+    builder.append(", executionTimeMs=");
+    builder.append(executionTimeMs);
+    builder.append(", fileName=");
+    builder.append(fileName);
+    builder.append(", heavyProcessingTimeMs=");
+    builder.append(heavyProcessingTimeMs);
+    builder.append(", lightProcessingTimeMs=");
+    builder.append(lightProcessingTimeMs);
+    builder.append(", maxNumberOfDependenciesPerCommand=");
+    builder.append(maxNumberOfDependenciesPerCommand);
+    builder.append(", maxTimeExecution=");
+    builder.append(maxTimeExecution);
+    builder.append(", mediumProcessingTimeMs=");
+    builder.append(mediumProcessingTimeMs);
+    builder.append(", numberOfCommands=");
+    builder.append(numberOfCommands);
+    builder.append(", numberOfThreads=");
+    builder.append(numberOfThreads);
+    builder.append(", parallelOperation=");
+    builder.append(parallelOperation);
+    builder.append(", percentHeavyCommand=");
+    builder.append(percentHeavyCommand);
+    builder.append(", percentLightCommand=");
+    builder.append(percentLightCommand);
+    builder.append(", percentMediumCommand=");
+    builder.append(percentMediumCommand);
+    builder.append(", timeBetweenChecksMsInInstantThroughputReportGenerator=");
+    builder.append(timeBetweenChecksMsInInstantThroughputReportGenerator);
+    builder.append("]");
+    return builder.toString();
+  }
 
 }

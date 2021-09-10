@@ -32,8 +32,8 @@ public class ReportGenerator {
   }
 
   public void generateReport() {
-    for (Command command : commands) {
-      theoreticalTimeMs += command.getWeight().getProcessingTimeMs();
+    for (int i = 0; i < config.getNumberOfCommands(); i++) {
+      theoreticalTimeMs += commands.get(i).getWeight().getProcessingTimeMs();
     }
 
     Long makepan = Duration.between(startTime, endTime).toMillis();
@@ -42,6 +42,7 @@ public class ReportGenerator {
     Double speedup = (double) theoreticalTimeMs / (double) makepan;
     Double efficiency = 100 * speedup / config.getNumberOfThreads();
     Double meanThroughput = config.getNumberOfCommands() / (makepan / MILLI_MULTIPLIER);
+    Double expectedMeanThroughput = config.getNumberOfCommands() / (theoreticalTimeMs / MILLI_MULTIPLIER);
 
     logger.info("Number of threads [{}]", config.getNumberOfThreads());
     logger.trace("theoretical time: [{}] ms", theoreticalTimeMs);
@@ -51,5 +52,6 @@ public class ReportGenerator {
     logger.info("efficiency: [{}]%", efficiency);
 
     logger.info("meanThroughput: [{}] messages/s", meanThroughput);
+    logger.trace("expected meanThroughput: [{}] messages/s", expectedMeanThroughput);
   }
 }

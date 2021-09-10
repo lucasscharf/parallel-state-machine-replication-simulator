@@ -26,29 +26,34 @@ public class Worker implements Runnable {
   }
 
   public void processing(Command commandToProcess) {
-    // logger.trace("Start processing [{}]", commandToProcess);
+    // logger.trace("Start processing command [{}] with time [{}]ms", commandToProcess.getId(),
+    //     commandToProcess.getWeight().getProcessingTimeMs());
     setCommand(commandToProcess);
     command.startProcessing();
     while (!command.doneProcessing()) {
       int i = 0; // dumb processing
     }
-
-    // logger.trace("End processing [{}]", commandToProcess);
+    // logger.trace("End processing [{}]", commandToProcess.getId());
   }
 
   public void run() {
-    logger.traceEntry("Running...");
-    while (scheduler.hasNext() || !scheduler.hasFinalizedGeneratingCommands()) {
-      logger.trace("Get next command");
+    // logger.traceEntry("Running...");
+    while (!scheduler.hasFinalizedGeneratingCommands() || scheduler.hasNext()) {
+      // logger.trace("Get next command");
       Command command;
       while ((command = scheduler.getNextCommand()) == null) {
+        try {
+          // logger.trace("We dont have command. Lets sleep");
+          Thread.sleep(1);
+        } catch (InterruptedException e) {
+          // DO Nothing
+        }
         if (scheduler.hasFinalizedProccessing())
           return;
-        logger.trace("Command not found");
       }
-      logger.trace("Processing command [{}]", command.getId());
+      // logger.trace("Processing command [{}]", command.getId());
       processing(command);
-      logger.trace("Finalized command [{}]", command.getId());
+      // logger.trace("Finalized command [{}]", command.getId());
       scheduler.finalizedCommand();
     }
   }

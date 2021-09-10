@@ -25,6 +25,7 @@ public class InstantThroughputReportGenerator {
 
   @SuppressWarnings("unchecked")
   private Thread monitor = new Thread(() -> {
+
     while (true) {
       LocalDateTime now = LocalDateTime.now();
 
@@ -41,6 +42,8 @@ public class InstantThroughputReportGenerator {
       }
 
       Integer commandCount = commandsExecuted.get();
+      if (lastCommandCount == null)
+        lastCommandCount = 0;
       Integer commandDiff = commandCount - lastCommandCount;
       Integer throughput = (commandDiff) / durationTime;
 
@@ -67,6 +70,8 @@ public class InstantThroughputReportGenerator {
       durationTime = 1;
 
     Integer commandCount = commandsExecuted.get();
+    if (lastCommandCount == null)
+      lastCommandCount = 0;
     Integer commandDiff = commandCount - lastCommandCount;
     Integer throughput = (commandDiff) / durationTime;
 
