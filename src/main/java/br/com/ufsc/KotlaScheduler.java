@@ -81,19 +81,14 @@ public class KotlaScheduler implements Scheduler {
         // "Get lock to add command in graph. Get lock. Max command to add [{}]
         // commandsToProcess.slze [{}]. Add command [{}]. Graph size [{}]",
         // maxCommandsToAdd, commandsToProcess.size(), i, graph.vertexSet().size());
-        // System.out.println("Get lock to add command in graph. Get lock.
-        // commandsToProcess.slze ["
-        // + commandsToProcess.size() + "]. Add command [" + i + "]. Graph size [" +
-        // graph.vertexSet().size() + "]");
+        // System.out.println("Get lock to add command in graph. Get lock. commandsToProcess.slze ["
+        //     + commandsToProcess.size() + "]. Add command [" + i + "]. Graph size [" + graph.vertexSet().size() + "]");
         synchronized (lock) {
           addCommandToGraph(i);
         }
 
         if (i % 3000 == 555) {
           try {
-            logger.info(
-                "We will sleep to let others threads work. i [{}]. commandsToProcess.slze [{}]. Added command [{}]. Graph size [{}]. Proccessed commands [{}]", //
-                i, commandsToProcess.size(), i, graph.vertexSet().size(),  commandsExecuted.get() );
             Thread.sleep(1500L);
           } catch (InterruptedException e) {
             // TODO Auto-generated catch block

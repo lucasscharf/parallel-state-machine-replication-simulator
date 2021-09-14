@@ -245,15 +245,16 @@ public class KotlaSchedulerTest {
   @Test
   public void schedulerTestingWithParallelOperations() throws InterruptedException {
     Config config = new Config();
-    config.setNumberOfCommands(100_000);
+    config.setNumberOfCommands(50_000);
     config.setNumberOfThreads(4);
-    config.setLightProcessingTimeMs(10);
-    config.setMediumProcessingTimeMs(50);
-    config.setHeavyProcessingTimeMs(100);
+    config.setLightProcessingTimeMs(0);
+    config.setMediumProcessingTimeMs(0);
+    config.setHeavyProcessingTimeMs(0);
     config.setMaxNumberOfDependenciesPerCommand(2);
     config.setParallelOperation(true);
-    int executionTimeMs = 10_000;
-    config.setExecutionTimeMs(executionTimeMs);
+    config.setFileName("fileName_rapido");
+    // int executionTimeMs = 60_000;
+    // config.setExecutionTimeMs(executionTimeMs);
 
     CommandWeight.config = config;
 

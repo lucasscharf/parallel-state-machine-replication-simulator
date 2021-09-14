@@ -20,6 +20,7 @@ public class InstantThroughputReportGenerator {
   private Integer timeBetweenChecks;
   private Integer lastCommandCount;
   private LocalDateTime lastCommandTime;
+  private LocalDateTime firstTime;
   private Logger logger = LogManager.getLogger();
   private Config config;
 
@@ -28,6 +29,9 @@ public class InstantThroughputReportGenerator {
 
     while (true) {
       LocalDateTime now = LocalDateTime.now();
+      if (firstTime == null) {
+        firstTime = now;
+      }
 
       Duration duration = Duration.between(lastCommandTime, now);
       Integer durationTime = (int) duration.get(ChronoUnit.SECONDS);
@@ -63,6 +67,10 @@ public class InstantThroughputReportGenerator {
 
   @SuppressWarnings("unchecked")
   private void updateTimes(LocalDateTime now) {
+    if (firstTime == null) {
+      firstTime = now;
+    }
+
     Duration duration = Duration.between(lastCommandTime, now);
     Integer durationTime = (int) duration.get(ChronoUnit.SECONDS);
 
@@ -106,8 +114,11 @@ public class InstantThroughputReportGenerator {
 
     logger.info("Commands processed without processing:");
     for (SimpleEntry<LocalDateTime, Integer> commandsProcessed : commandsProcessed) {
+      // System.out.println(String.format("%s", 
+      // commandsProcessed.getValue()));
       System.out.println(String.format("%s,%s", //
-          commandsProcessed.getKey().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli(), //
+          (commandsProcessed.getKey().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+              - firstTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()), //
           commandsProcessed.getValue()));
     }
 
