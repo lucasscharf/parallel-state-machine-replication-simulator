@@ -114,12 +114,12 @@ public class InstantThroughputReportGenerator {
 
     logger.info("Commands processed without processing:");
     for (SimpleEntry<LocalDateTime, Integer> commandsProcessed : commandsProcessed) {
-      // System.out.println(String.format("%s", 
+      System.out.println(String.format("%s", 
+      commandsProcessed.getValue()));
+      // System.out.println(String.format("%s,%s", //
+      // (commandsProcessed.getKey().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+      // - firstTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()), //
       // commandsProcessed.getValue()));
-      System.out.println(String.format("%s,%s", //
-          (commandsProcessed.getKey().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
-              - firstTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()), //
-          commandsProcessed.getValue()));
     }
 
   }

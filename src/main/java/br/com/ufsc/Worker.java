@@ -1,5 +1,7 @@
 package br.com.ufsc;
 
+import java.util.List;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -26,35 +28,39 @@ public class Worker implements Runnable {
   }
 
   public void processing(Command commandToProcess) {
-    // logger.trace("Start processing command [{}] with time [{}]ms", commandToProcess.getId(),
-    //     commandToProcess.getWeight().getProcessingTimeMs());
+    // logger.trace("Start processing command [{}] with time [{}]ms",
+    // commandToProcess.getId(),
+    // commandToProcess.getWeight().getProcessingTimeMs());
     setCommand(commandToProcess);
     command.startProcessing();
     while (!command.doneProcessing()) {
       int i = 0; // dumb processing
     }
     // logger.trace("End processing [{}]", commandToProcess.getId());
+    scheduler.finalizedCommand();
   }
 
   public void run() {
-    // logger.traceEntry("Running...");
-    while (!scheduler.hasFinalizedGeneratingCommands() || scheduler.hasNext()) {
-      // logger.trace("Get next command");
-      Command command;
-      while ((command = scheduler.getNextCommand()) == null) {
-        try {
-          // logger.trace("We dont have command. Lets sleep");
-          Thread.sleep(1);
-        } catch (InterruptedException e) {
-          // DO Nothing
+    try {
+      // logger.traceEntry("Running...");
+      while (!scheduler.hasFinalizedProccessing()) {
+        // logger.trace("Get next command");
+  
+        while (scheduler.getNextCommand().isEmpty()) {
+          try {
+            // logger.trace("We dont have command. Lets sleep");
+            Thread.sleep(1);
+          } catch (InterruptedException e) {
+            // DO Nothing
+          }
+          if (scheduler.hasFinalizedProccessing())
+            return;
         }
-        if (scheduler.hasFinalizedProccessing())
-          return;
+        List<Command> commands = scheduler.getNextCommand();
+        commands.forEach(this::processing);
       }
-      // logger.trace("Processing command [{}]", command.getId());
-      processing(command);
-      // logger.trace("Finalized command [{}]", command.getId());
-      scheduler.finalizedCommand();
+    } catch (Exception e) {
+      e.printStackTrace();
     }
   }
 }

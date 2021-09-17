@@ -1,6 +1,8 @@
 package br.com.ufsc;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -119,10 +121,10 @@ public class KotlaScheduler implements Scheduler {
     return hasNextCommand;
   }
 
-  public Command getNextCommand() {
+  public List<Command> getNextCommand() {
     // logger.trace("Get next command. Get lock");
     if (config.isTimeBasedExecution() && LocalDateTime.now().isAfter(config.getMaxTimeExecution()))
-      return null;
+      return new ArrayList<>();
     Command commandToExecute;
     synchronized (lock) {
       commandToExecute = graph //
@@ -131,8 +133,10 @@ public class KotlaScheduler implements Scheduler {
       if (commandToExecute != null)
         graph.removeVertex(commandToExecute);//
     }
+    if(commandToExecute == null) 
+      return new ArrayList<>();
     // logger.trace("Get next command. Release lock");
-    return commandToExecute;
+    return Arrays.asList(commandToExecute);
   }
 
   public boolean hasFinalizedProccessing() {

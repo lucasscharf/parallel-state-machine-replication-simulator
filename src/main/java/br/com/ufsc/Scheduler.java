@@ -1,5 +1,6 @@
 package br.com.ufsc;
 
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public interface Scheduler {
@@ -7,7 +8,7 @@ public interface Scheduler {
 
   public boolean hasNext();
 
-  public Command getNextCommand();
+  public List<Command> getNextCommand();
 
   public void finalizedCommand();
 

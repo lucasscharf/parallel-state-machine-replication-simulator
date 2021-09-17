@@ -24,6 +24,7 @@ public class Config {
   private String fileName = DONT_SAVE;
   private LocalDateTime maxTimeExecution;
   private Integer executionTimeMs;
+  private Integer batchSize;
 
   public Config() {
     lightProcessingTimeMs = 200;
@@ -43,6 +44,16 @@ public class Config {
     percentLightCommand = 33;
 
     parallelOperation = false;
+
+    batchSize = 100;
+  }
+
+  public Integer getBatchSize() {
+    return batchSize;
+  }
+
+  public void setBatchSize(Integer batchSize) {
+    this.batchSize = batchSize;
   }
 
   public LocalDateTime getMaxTimeExecution() {
@@ -175,7 +186,9 @@ public class Config {
   @Override
   public String toString() {
     StringBuilder builder = new StringBuilder();
-    builder.append("Config [dependencyModulus=");
+    builder.append("Config [batchSize=");
+    builder.append(batchSize);
+    builder.append(", dependencyModulus=");
     builder.append(dependencyModulus);
     builder.append(", executionTimeMs=");
     builder.append(executionTimeMs);
