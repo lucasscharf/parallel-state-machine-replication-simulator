@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 public class SequentialSchedulerTest {
 
   @Test
-  public void schedulerTesting() throws InterruptedException {
+  public void schedulerTestingWithoutParallelOperations() throws InterruptedException {
     Config config = new Config();
     config.setNumberOfCommands(50_000);
     config.setNumberOfThreads(1);

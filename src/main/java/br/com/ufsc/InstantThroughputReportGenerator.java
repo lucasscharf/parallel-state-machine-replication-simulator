@@ -2,13 +2,11 @@ package br.com.ufsc;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
+import java.time.temporal.ChronoUnit;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.AbstractMap.SimpleEntry;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.time.temporal.ChronoUnit;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -42,7 +40,7 @@ public class InstantThroughputReportGenerator {
           continue;
         }
       } catch (InterruptedException e) {
-        // TODO ignore
+        // ignore
       }
 
       Integer commandCount = commandsExecuted.get();
@@ -60,7 +58,7 @@ public class InstantThroughputReportGenerator {
       try {
         Thread.sleep(timeBetweenChecks);
       } catch (InterruptedException e) {
-        // TODO ignore
+        // ignore
       }
     }
   });
@@ -116,10 +114,6 @@ public class InstantThroughputReportGenerator {
     for (SimpleEntry<LocalDateTime, Integer> commandsProcessed : commandsProcessed) {
       System.out.println(String.format("%s", 
       commandsProcessed.getValue()));
-      // System.out.println(String.format("%s,%s", //
-      // (commandsProcessed.getKey().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
-      // - firstTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()), //
-      // commandsProcessed.getValue()));
     }
 
   }

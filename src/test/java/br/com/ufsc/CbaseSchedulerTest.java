@@ -1,25 +1,19 @@
 package br.com.ufsc;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultEdge;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-public class KotlaSchedulerTest {
-
-  // Gerar 2 comandos com dependência e um sem (alterando as ordens de inserção)
-  // Tentar gerar um grafo com ciclo (só jesus sabe como vou fazer isso)
+public class CbaseSchedulerTest {
 
   @DisplayName("GIVEN a single command without dependency WHEN create dag in kotla THEN generate a graph with one node and without dependencies")
   @Test
@@ -28,7 +22,7 @@ public class KotlaSchedulerTest {
     Config config = new Config();
     config.setNumberOfCommands(commands.size());
 
-    KotlaScheduler kotlaScheduler = new KotlaScheduler(commands, config);
+    CbaseScheduler kotlaScheduler = new CbaseScheduler(commands, config);
 
     Graph<Command, DefaultEdge> graph = kotlaScheduler.graph;
 
@@ -46,7 +40,7 @@ public class KotlaSchedulerTest {
     Config config = new Config();
     config.setNumberOfCommands(commands.size());
 
-    KotlaScheduler kotlaScheduler = new KotlaScheduler(commands, config);
+    CbaseScheduler kotlaScheduler = new CbaseScheduler(commands, config);
 
     Graph<Command, DefaultEdge> graph = kotlaScheduler.graph;
 
@@ -66,7 +60,7 @@ public class KotlaSchedulerTest {
     Config config = new Config();
     config.setNumberOfCommands(commands.size());
 
-    KotlaScheduler kotlaScheduler = new KotlaScheduler(commands, config);
+    CbaseScheduler kotlaScheduler = new CbaseScheduler(commands, config);
 
     Graph<Command, DefaultEdge> graph = kotlaScheduler.graph;
 
@@ -88,7 +82,7 @@ public class KotlaSchedulerTest {
     Config config = new Config();
     config.setNumberOfCommands(commands.size());
 
-    KotlaScheduler kotlaScheduler = new KotlaScheduler(commands, config);
+    CbaseScheduler kotlaScheduler = new CbaseScheduler(commands, config);
 
     Graph<Command, DefaultEdge> graph = kotlaScheduler.graph;
 
@@ -113,7 +107,7 @@ public class KotlaSchedulerTest {
     Config config = new Config();
     config.setNumberOfCommands(commands.size());
 
-    KotlaScheduler kotlaScheduler = new KotlaScheduler(commands, config);
+    CbaseScheduler kotlaScheduler = new CbaseScheduler(commands, config);
 
     Graph<Command, DefaultEdge> graph = kotlaScheduler.graph;
 
@@ -139,7 +133,7 @@ public class KotlaSchedulerTest {
     Config config = new Config();
     config.setNumberOfCommands(commands.size());
 
-    KotlaScheduler kotlaScheduler = new KotlaScheduler(commands, config);
+    CbaseScheduler kotlaScheduler = new CbaseScheduler(commands, config);
 
     Graph<Command, DefaultEdge> graph = kotlaScheduler.graph;
 
@@ -165,7 +159,7 @@ public class KotlaSchedulerTest {
     Config config = new Config();
     config.setNumberOfCommands(commands.size());
 
-    KotlaScheduler kotlaScheduler = new KotlaScheduler(commands, config);
+    CbaseScheduler kotlaScheduler = new CbaseScheduler(commands, config);
 
     Graph<Command, DefaultEdge> graph = kotlaScheduler.graph;
 
@@ -192,7 +186,7 @@ public class KotlaSchedulerTest {
     Config config = new Config();
     config.setNumberOfCommands(commands.size());
 
-    KotlaScheduler kotlaScheduler = new KotlaScheduler(commands, config);
+    CbaseScheduler kotlaScheduler = new CbaseScheduler(commands, config);
 
     Graph<Command, DefaultEdge> graph = kotlaScheduler.graph;
 
@@ -225,7 +219,7 @@ public class KotlaSchedulerTest {
     List<Command> commandsToProcess = commandGenerator.generateCommands();
 
     ReportGenerator reportGenerator = new ReportGenerator(commandsToProcess, config);
-    KotlaScheduler scheduler = new KotlaScheduler(commandsToProcess, config);
+    CbaseScheduler scheduler = new CbaseScheduler(commandsToProcess, config);
     InstantThroughputReportGenerator instantThroughputReportGenerator = new InstantThroughputReportGenerator(config,
         scheduler.getCommandsExecuted());
 
@@ -253,8 +247,6 @@ public class KotlaSchedulerTest {
     config.setMaxNumberOfDependenciesPerCommand(2);
     config.setParallelOperation(true);
     config.setFileName("fileName_rapido");
-    // int executionTimeMs = 60_000;
-    // config.setExecutionTimeMs(executionTimeMs);
 
     CommandWeight.config = config;
 
@@ -262,10 +254,9 @@ public class KotlaSchedulerTest {
     List<Command> commandsToProcess = new ArrayList<>(config.getNumberOfCommands());
 
     commandsToProcess = commandGenerator.generateCommands();
-    // commandGenerator.generateCommandsInteractively(commandsToProcess);
 
     ReportGenerator reportGenerator = new ReportGenerator(commandsToProcess, config);
-    KotlaScheduler scheduler = new KotlaScheduler(commandsToProcess, config);
+    CbaseScheduler scheduler = new CbaseScheduler(commandsToProcess, config);
     InstantThroughputReportGenerator instantThroughputReportGenerator = new InstantThroughputReportGenerator(config,
         scheduler.getCommandsExecuted());
 

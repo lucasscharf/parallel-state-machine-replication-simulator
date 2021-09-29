@@ -2,8 +2,8 @@
 
 This project aims create a simple simulator to compare 3 different ways of handling with State Machine Simulator.
 1 - Without parallelism [4].
-2 - With parallelism base in graphs [1].
-3 - With parallelism base in bitmaps [2][3].
+2 - With parallelism with CBASE [1].
+3 - With parallelism with Batch operations [2][3].
 
 ## How to compile 
 
@@ -12,17 +12,24 @@ To compile this code you need the following command:
 ```
  mvn clean install -DskipTests
 ```
+It needs Java 8+ and maven to compile.
 
 ## How to run
-First you need compile the code, after, you use the following command:
+In this simulator, the executions were performed using Junit5 + maven.
+It is intentional to organize and documentate the executions and to mantain the src code focused only in parallel execution and simulation. 
+Every scheduler has a test class with execution. To execute execute it, just use one of following command:
 
 ```
-java -jar target/application.jar [-DconfigFile=<path to config>]
+mvn test -Dtest=SequentialSchedulerTest#schedulerTestingWithoutParallelOperations
+mvn test -Dtest=CbaseSchedulerTest#schedulerTestingWithParallelOperations
+mvn test -Dtest=BatchSchedulerTest#schedulerTestingWithParallelOperations
 ```
 
-If there an different configuration is need, its path should be provided in ``-DconfigFile`` config.
-The file must be a json with right properties.
+It will create the scheduler, the commands, start the timers and print the log in the end.
+To change any configuration, just edit the config object that is create beforehand.
 
+If the filename is present, but the file is absent, the system will create one and save. 
+If the filename method is removed, then the system will always create a new set of commands.
 
 # References and links
 [1] Kotla, R., & Dahlin, M. (2004). High throughput Byzantine fault tolerance. International Conference on Dependable Systems and Networks, 2004. doi:10.1109/dsn.2004.1311928

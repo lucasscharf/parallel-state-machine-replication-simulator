@@ -21,15 +21,16 @@ public class BatchScheduler implements Scheduler {
   List<Command> commandsToProcess;
 
   /**
-   * Ao adicionar um novo comando, o sistema verificará se o novo comando tem
-   * dependência com algum nó já presente no grafo. Caso tenha, ele irá percorrer
-   * o grafo em busca do nó que não tenha arestas chegando (e que o novo comando
-   * seja dependente) (vou chamar esse nó de último nó). Após isso, ele adicionará
-   * uma dependência do novo comando ao comando encontrado.
+   * Ao adicionar um novo comando, o sistema criará um grupo de comandos. E
+   * verificará se o novo grupo tem dependência com algum grupo já presente no
+   * grafo. Caso tenha, ele irá percorrer o grafo em busca do nó que não tenha
+   * arestas chegando (e que o novo comando seja dependente) (vou chamar esse nó
+   * de último nó). Após isso, ele adicionará uma dependência do novo comando ao
+   * comando encontrado.
    * 
    * Quando o sistema pedir um novo comando para processar, o sistema irá
-   * percorrer todo o grafo em busca de um comando que não tenha nenhuma
-   * dependência.
+   * percorrer todo o grafo em busca de grupo de comandos que não tenha nenhuma
+   * dependência e retornará esse.
    */
   public BatchScheduler(List<Command> commandsToProcess, Config config) {
     logger.traceEntry("Starting mounting graph to [{}] commands", commandsToProcess.size());
@@ -68,7 +69,6 @@ public class BatchScheduler implements Scheduler {
       node.addCommand(commandToAdd);
     }
 
-    // System.out.println("Adding new batch begin: " + begin + " end: " + end);
     dgInsertBatch(node);
   }
 

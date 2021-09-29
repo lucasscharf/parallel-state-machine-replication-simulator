@@ -5,7 +5,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -57,13 +56,6 @@ public class CommandGenerator {
   private void generateCommandsBySize(List<Command> commands) {
     for (int i = 0; i < config.getNumberOfCommands(); i++) {
       commands.add(new Command(i, fabricateCommandWeight(), fabricateDependencies()));
-    }
-  }
-
-  private void generateByTime(List<Command> commands) {
-    int i = 0;
-    while (LocalDateTime.now().isBefore(config.getMaxTimeExecution())) {
-      commands.add(new Command(i++, fabricateCommandWeight(), fabricateDependencies()));
     }
   }
 
